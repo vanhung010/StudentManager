@@ -1,0 +1,52 @@
+# ========================
+# MAVEN
+# ========================
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# ========================
+# INTELLIJ IDEA
+# ========================
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+.idea/modules.xml
+.idea/workspace.xml
+
+# ========================
+# SPRING BOOT
+# ========================
+*.jar
+*.war
+*.ear
+*.class
+
+# ========================
+# APPLICATION PROPERTIES (bảo mật)
+# ========================
+src/main/resources/application-prod.properties
+src/main/resources/application-local.properties
+src/main/resources/application.properties
+
+# ========================
+# LOGS
+# ========================
+logs/
+*.log
+*.log.*
+
+# ========================
+# OS
+# ========================
+.DS_Store
+Thumbs.db
+
+# ========================
+# ENVIRONMENT
+# ========================
+.env
+.env.*
