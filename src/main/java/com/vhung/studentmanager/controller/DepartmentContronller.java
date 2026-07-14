@@ -27,7 +27,7 @@ public class DepartmentContronller {
 
     //api/departments
     @PostMapping
-    public ResponseEntity<ApiResponse<DepartmentResponseDTO>> create(@RequestBody @Validated DepartmentRequestDTO departmentRequestDTO){
+    public ResponseEntity<ApiResponse<DepartmentResponseDTO>> create(@RequestBody DepartmentRequestDTO departmentRequestDTO){
         DepartmentResponseDTO data = departmentService.create(departmentRequestDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(data));

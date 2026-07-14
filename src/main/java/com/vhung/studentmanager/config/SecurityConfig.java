@@ -15,9 +15,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity security){
         security
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
-
+                .csrf(csrf -> csrf.disable())      //tắt csrf
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()) //tắt phân quyền
+                .httpBasic(basic -> basic.disable())
+                .formLogin(form -> form.disable());
         return security.build();
     }
 

@@ -29,13 +29,17 @@ public class DepartmentService {
             throw new AppException(HttpStatus.CONFLICT, "Mã khoa đã tồn tại");
         }
         //Convert từ DTO -> Entity
+
         Departments departments = new Departments();
-        departments.setDepartmentCode(departments.getDepartmentCode());
-        departments.setName(departments.getName());
+        departments.setDepartmentCode(departmentsRequestDTO.getDepartmentCode());
+        departments.setName(departmentsRequestDTO.getName());
         departments.setDeleted(false);
         //lưu
         Departments saved = departmentRepository.save(departments);
         //trả về DTO
+
+
+
         return toDTO(saved);
     }
 
