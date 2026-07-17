@@ -15,4 +15,6 @@ public interface UserReposistory extends JpaRepository<User, Long> {
     //kiểm tra trùng userName khi cập nhật
     boolean existsUserByUserNameAndIdNot(String userName, Long id);
 
+
+    Optional<User> findByIdAndIsDeletedFalse(Long aLong);
 }

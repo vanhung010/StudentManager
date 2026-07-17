@@ -1,5 +1,6 @@
 package com.vhung.studentmanager.service;
 
+import ch.qos.logback.classic.spi.IThrowableProxy;
 import com.vhung.studentmanager.dto.request.UserRequestDTO;
 import com.vhung.studentmanager.dto.response.UserResponseDTO;
 import com.vhung.studentmanager.entity.Role;
@@ -23,7 +24,7 @@ public class UserService {
         if(!request.getRole().equals("ADMIN") && !request.getRole().equals("TEACHER") && !request.getRole().equals("STUDENT")){
             throw new AppException(HttpStatus.BAD_REQUEST, "Vai trò không hợp lệ");
         }
-        if(request.getPassWord().length() < 8 ) {
+        if(request.getPassword().length() < 8 ) {
             throw new AppException(HttpStatus.BAD_REQUEST, "Mật khẩu ít nhất 8 kí tự");
         }
         if(userReposistory.existsUserByUserName(request.getUserName())){
@@ -33,7 +34,7 @@ public class UserService {
 
         user.setUserName(request.getUserName());
         user.setRole(Role.valueOf(request.getRole()));
-        user.setPassword(passwordEncoder.encode(request.getPassWord()));
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setIsDeleted(false);
 
         User userSave = userReposistory.save(user);
@@ -41,6 +42,25 @@ public class UserService {
         return toDTO(userSave);
     }
 
+    public UserResponseDTO getUserById(Long id) {
+        User user = userReposistory.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy User"));
+        UserResponseDTO result = toDTO(user);
+        return result;
+    }
+
+    //cập nhật username
+    public UserResponseDTO updateUserName(Long id, String userNameUpdate){
+        User user = userReposistory.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy tài khoản"));
+        if(userReposistory.existsUserByUserNameAndIdNot(userNameUpdate, id)){
+            throw new AppException(HttpStatus.CONFLICT, "Tên người dùng đã tôn tại");
+        }
+
+        user.setUserName(userNameUpdate);
+
+        return toDTO(userReposistory.save(user));
+    }
+
+    //convert DTO
     private UserResponseDTO toDTO(User user) {
         UserResponseDTO data = UserResponseDTO.builder()
                 .id(user.getId())
@@ -52,5 +72,6 @@ public class UserService {
 
         return data;
     }
+
 
 }

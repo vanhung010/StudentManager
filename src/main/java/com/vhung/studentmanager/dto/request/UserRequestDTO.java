@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder //đánhdaausus dùng loomhok builder
 public class UserRequestDTO {
     private String userName;
-    private String passWord;
+    private String password;
     private String role; //dùng String nhận dữ liệu Json rồi convert  dễ xử lí hơn dùng Enum
 
 
