@@ -3,10 +3,12 @@ package com.vhung.studentmanager.controller;
 import com.vhung.studentmanager.dto.request.UpdateUserNameRequest;
 import com.vhung.studentmanager.dto.request.UserRequestDTO;
 import com.vhung.studentmanager.dto.response.ApiResponse;
+import com.vhung.studentmanager.dto.response.PageResponse;
 import com.vhung.studentmanager.dto.response.UserResponseDTO;
 import com.vhung.studentmanager.entity.User;
 import com.vhung.studentmanager.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,5 +37,14 @@ public class UserController {
     public ResponseEntity<ApiResponse<UserResponseDTO>> updateUserName(@PathVariable Long id, @RequestBody UpdateUserNameRequest userNameRequest){
         UserResponseDTO data = userService.updateUserName(id, userNameRequest.getUserName());
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(data));
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<PageResponse<UserResponseDTO>>> getAll(@RequestParam(required = false) String role,
+                                                                     @RequestParam(defaultValue = "0") int page,
+                                                                     @RequestParam(defaultValue = "20") int size)
+    {
+        PageResponse<UserResponseDTO> data = userService.getAll(role, page, size);
+        return ResponseEntity.ok(ApiResponse.ok(data));
     }
 }

@@ -2,6 +2,7 @@ package com.vhung.studentmanager.service;
 
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import com.vhung.studentmanager.dto.request.UserRequestDTO;
+import com.vhung.studentmanager.dto.response.PageResponse;
 import com.vhung.studentmanager.dto.response.UserResponseDTO;
 import com.vhung.studentmanager.entity.Role;
 import com.vhung.studentmanager.entity.User;
@@ -9,6 +10,9 @@ import com.vhung.studentmanager.exception.AppException;
 
 import com.vhung.studentmanager.repository.UserReposistory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -58,6 +62,28 @@ public class UserService {
         user.setUserName(userNameUpdate);
 
         return toDTO(userReposistory.save(user));
+    }
+
+    //lấy danh sách tất cả user
+    public PageResponse<UserResponseDTO> getAll(String role, int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<User> users;
+        if(role != null && !role.isBlank()){
+            Role roleEnum;
+            try{
+                roleEnum = Role.valueOf(role);
+
+            } catch (IllegalArgumentException e) {
+                throw new AppException(HttpStatus.BAD_REQUEST, "Vai trò lọc không hợp lệ");
+            }
+            users = userReposistory.findAllByIsDeletedFalseAndRole(roleEnum, pageable);
+        }
+        else {
+            users = userReposistory.findAllByIsDeletedFalse(pageable);
+        }
+        Page<UserResponseDTO> dtoPage = users.map(this::toDTO);
+        return PageResponse.from(dtoPage);
     }
 
     //convert DTO
