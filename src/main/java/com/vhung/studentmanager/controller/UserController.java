@@ -42,8 +42,7 @@ public class UserController {
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<UserResponseDTO>>> getAll(@RequestParam(required = false) String role,
                                                                      @RequestParam(defaultValue = "0") int page,
-                                                                     @RequestParam(defaultValue = "20") int size)
-    {
+                                                                     @RequestParam(defaultValue = "20") int size) {
         PageResponse<UserResponseDTO> data = userService.getAll(role, page, size);
         return ResponseEntity.ok(ApiResponse.ok(data));
     }
