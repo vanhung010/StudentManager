@@ -1,6 +1,7 @@
 package com.vhung.studentmanager.service;
 
 import com.vhung.studentmanager.dto.request.StudentRequestDTO;
+import com.vhung.studentmanager.dto.request.UpdateStudentRequest;
 import com.vhung.studentmanager.dto.response.DepartmentResponseDTO;
 import com.vhung.studentmanager.dto.response.StudentResponseDTO;
 import com.vhung.studentmanager.entity.*;
@@ -76,6 +77,21 @@ public class StudentService {
         Student studentSave = studentReposistory.save(student);
 
         return toDTO(studentSave);
+    }
+
+    public StudentResponseDTO update(Long id, UpdateStudentRequest dataUpdate){
+        Student student = studentReposistory.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy sinh viên"));
+
+        student.setFullName(dataUpdate.getFullName());
+        student.setEmail(dataUpdate.getEmail());
+        student.setPhone(dataUpdate.getPhone());
+        student.setClassName(dataUpdate.getClassName());
+
+        Student studentSave = studentReposistory.save(student);
+
+        return toDTO(studentSave);
+
     }
 
 
