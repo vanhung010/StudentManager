@@ -83,6 +83,7 @@ public class UserService {
             users = userReposistory.findAllByIsDeletedFalse(pageable);
         }
         Page<UserResponseDTO> dtoPage = users.map(this::toDTO);
+        
         return PageResponse.from(dtoPage);
     }
 

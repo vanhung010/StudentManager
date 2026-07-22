@@ -3,6 +3,7 @@ package com.vhung.studentmanager.service;
 import com.vhung.studentmanager.dto.request.StudentRequestDTO;
 import com.vhung.studentmanager.dto.request.UpdateStudentRequest;
 import com.vhung.studentmanager.dto.response.DepartmentResponseDTO;
+import com.vhung.studentmanager.dto.response.PageResponse;
 import com.vhung.studentmanager.dto.response.StudentResponseDTO;
 import com.vhung.studentmanager.entity.*;
 import com.vhung.studentmanager.exception.AppException;
@@ -10,6 +11,9 @@ import com.vhung.studentmanager.repository.DepartmentRepository;
 import com.vhung.studentmanager.repository.StudentReposistory;
 import com.vhung.studentmanager.repository.UserReposistory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -94,6 +98,41 @@ public class StudentService {
 
     }
 
+    public StudentResponseDTO get(Long id){
+        Student student = studentReposistory.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy sinh viên"));
+
+        return toDTO(student);
+    }
+
+    public PageResponse<StudentResponseDTO> getAll(int page, int size, String name, Long departmentId){
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Student> students;
+
+        boolean hasName = name != null && !name.isBlank();
+
+        boolean hasDept = departmentId != null;
+
+        if (hasName && hasDept) {
+            students = studentReposistory
+                    .findAllByIsDeletedFalseAndFullNameContainingIgnoreCaseAndDepartmentId(
+                            name, departmentId, pageable);
+        } else if (hasName) {
+            students = studentReposistory
+                    .findAllByIsDeletedFalseAndFullNameContainingIgnoreCase(name, pageable);
+        } else if (hasDept) {
+            students = studentReposistory
+                    .findAllByIsDeletedFalseAndDepartmentId(departmentId, pageable);
+        } else {
+            students = studentReposistory.findAllByIsDeletedFalse(pageable);
+        }
+
+        Page<StudentResponseDTO> dtoPage = students.map(this::toDTO);
+
+        return PageResponse.from(dtoPage);
+
+    }
 
     private StudentResponseDTO toDTO(Student student) {
         return StudentResponseDTO.builder()
@@ -114,4 +153,6 @@ public class StudentService {
                         .build())
                 .build();
     }
+
+
 }
