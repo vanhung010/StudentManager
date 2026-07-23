@@ -1,4 +1,4 @@
-package com.vhung.studentmanager.repository;
+package com.vhung.studentmanager.specification;
 
 import com.vhung.studentmanager.entity.Teacher;
 import org.springframework.data.jpa.domain.Specification;

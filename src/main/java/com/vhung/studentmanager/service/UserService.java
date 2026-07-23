@@ -3,7 +3,7 @@ package com.vhung.studentmanager.service;
 import com.vhung.studentmanager.dto.request.UserRequestDTO;
 import com.vhung.studentmanager.dto.response.PageResponse;
 import com.vhung.studentmanager.dto.response.UserResponseDTO;
-import com.vhung.studentmanager.entity.Role;
+import com.vhung.studentmanager.entity.enums.Role;
 import com.vhung.studentmanager.entity.User;
 import com.vhung.studentmanager.exception.AppException;
 

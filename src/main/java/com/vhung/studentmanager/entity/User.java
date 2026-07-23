@@ -1,5 +1,6 @@
 package com.vhung.studentmanager.entity;
 
+import com.vhung.studentmanager.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 

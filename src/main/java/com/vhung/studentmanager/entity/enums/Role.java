@@ -1,4 +1,4 @@
-package com.vhung.studentmanager.entity;
+package com.vhung.studentmanager.entity.enums;
 
 public enum Role {
     ADMIN,

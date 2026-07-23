@@ -6,6 +6,8 @@ import com.vhung.studentmanager.dto.response.DepartmentResponseDTO;
 import com.vhung.studentmanager.dto.response.PageResponse;
 import com.vhung.studentmanager.dto.response.StudentResponseDTO;
 import com.vhung.studentmanager.entity.*;
+import com.vhung.studentmanager.entity.enums.Gender;
+import com.vhung.studentmanager.entity.enums.Role;
 import com.vhung.studentmanager.exception.AppException;
 import com.vhung.studentmanager.repository.DepartmentRepository;
 import com.vhung.studentmanager.repository.StudentRepository;

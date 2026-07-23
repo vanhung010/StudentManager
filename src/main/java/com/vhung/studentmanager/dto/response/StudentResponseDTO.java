@@ -1,6 +1,6 @@
 package com.vhung.studentmanager.dto.response;
 
-import com.vhung.studentmanager.entity.Gender;
+import com.vhung.studentmanager.entity.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

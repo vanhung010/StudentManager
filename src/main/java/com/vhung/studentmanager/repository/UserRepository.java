@@ -1,6 +1,6 @@
 package com.vhung.studentmanager.repository;
 
-import com.vhung.studentmanager.entity.Role;
+import com.vhung.studentmanager.entity.enums.Role;
 import com.vhung.studentmanager.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

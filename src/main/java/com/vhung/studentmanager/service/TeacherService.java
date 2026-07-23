@@ -4,7 +4,7 @@ import com.vhung.studentmanager.dto.response.PageResponse;
 import com.vhung.studentmanager.dto.response.TeacherResponseDTO;
 import com.vhung.studentmanager.entity.Teacher;
 import com.vhung.studentmanager.repository.TeacherRepository;
-import com.vhung.studentmanager.repository.TeacherSpecification;
+import com.vhung.studentmanager.specification.TeacherSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

@@ -1,5 +1,6 @@
 package com.vhung.studentmanager.entity;
 
+import com.vhung.studentmanager.entity.enums.Gender;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,10 +15,10 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Student extends BaseEntity{
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id", nullable = false)
     private Departments departments;
     @Column(name = "student_code", nullable = false, unique = true, length = 20)
@@ -35,8 +36,12 @@ public class Student extends BaseEntity{
     private Gender gender;
     @Column(name = "enrollment_year", nullable = false)
     private Integer enrollmentYear;
-    @Column(name = "class_name", length = 20)
-    private String className;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "class_id")
+    private Classes classes;
+
     @Column(name = "gpa", precision = 3, scale = 2)
     private BigDecimal gpa;
     @Column(name = "is_deleted", nullable = false)
