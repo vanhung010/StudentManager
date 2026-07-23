@@ -2,6 +2,7 @@ package com.vhung.studentmanager.service;
 
 import com.vhung.studentmanager.dto.request.StudentRequestDTO;
 import com.vhung.studentmanager.dto.request.UpdateStudentRequest;
+import com.vhung.studentmanager.dto.response.ClassResponseDTO;
 import com.vhung.studentmanager.dto.response.DepartmentResponseDTO;
 import com.vhung.studentmanager.dto.response.PageResponse;
 import com.vhung.studentmanager.dto.response.StudentResponseDTO;
@@ -9,6 +10,7 @@ import com.vhung.studentmanager.entity.*;
 import com.vhung.studentmanager.entity.enums.Gender;
 import com.vhung.studentmanager.entity.enums.Role;
 import com.vhung.studentmanager.exception.AppException;
+import com.vhung.studentmanager.repository.ClassesRepository;
 import com.vhung.studentmanager.repository.DepartmentRepository;
 import com.vhung.studentmanager.repository.StudentRepository;
 import com.vhung.studentmanager.repository.UserRepository;
@@ -29,6 +31,7 @@ public class StudentService {
     private final DepartmentRepository departmentRepository;
     private final UserRepository userRepository;
     private final StudentRepository studentRepository;
+    private final ClassesRepository classesRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -55,6 +58,9 @@ public class StudentService {
             throw new AppException(HttpStatus.BAD_REQUEST, "Giới tính không hợp lệ");
         }
 
+        Classes classes = classesRepository.findByIdAndIsDeletedFalse(request.getClassId())
+                .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy lớp hành chính"));
+
         //lưu user
         User user = User.builder()
                 .userName(request.getUsername())
@@ -64,6 +70,8 @@ public class StudentService {
                 .build();
 
         User userSave = userRepository.save(user);
+
+
 
         Student student = Student.builder()
                 .user(userSave)
@@ -75,7 +83,7 @@ public class StudentService {
                 .dateOfBirth(request.getDob())
                 .gender(gender)
                 .enrollmentYear(request.getEnrollmentYear())
-                .className(request.getClassName())
+                .classes(classes)
                 .gpa(BigDecimal.ZERO)
                 .isDeleted(false)
                 .build();
@@ -92,7 +100,7 @@ public class StudentService {
         student.setFullName(dataUpdate.getFullName());
         student.setEmail(dataUpdate.getEmail());
         student.setPhone(dataUpdate.getPhone());
-        student.setClassName(dataUpdate.getClassName());
+//        student.setClassName(dataUpdate.getClassName());
 
         Student studentSave = studentRepository.save(student);
 
@@ -118,14 +126,14 @@ public class StudentService {
 
         if (hasName && hasDept) {
             students = studentRepository
-                    .findAllByIsDeletedFalseAndFullNameContainingIgnoreCaseAndDepartmentId(
+                    .findAllByIsDeletedFalseAndFullNameContainingIgnoreCaseAndDepartmentsId(
                             name, departmentId, pageable);
         } else if (hasName) {
             students = studentRepository
                     .findAllByIsDeletedFalseAndFullNameContainingIgnoreCase(name, pageable);
         } else if (hasDept) {
             students = studentRepository
-                    .findAllByIsDeletedFalseAndDepartmentId(departmentId, pageable);
+                    .findAllByIsDeletedFalseAndDepartmentsId(departmentId, pageable);
         } else {
             students = studentRepository.findAllByIsDeletedFalse(pageable);
         }
@@ -146,8 +154,12 @@ public class StudentService {
                 .dob(student.getDateOfBirth())
                 .gender(student.getGender())
                 .enrollmentYear(student.getEnrollmentYear())
-                .className(student.getClassName())
                 .gpa(student.getGpa())
+                .classes(ClassResponseDTO.builder()               // ← thêm mới
+                        .id(student.getClasses().getId())
+                        .classCode(student.getClasses().getClassCode())
+                        .name(student.getClasses().getName())
+                        .build())
                 .department(DepartmentResponseDTO.builder()
                         .id(student.getDepartments().getId())
                         .departmentCode(student.getDepartments().getDepartmentCode())

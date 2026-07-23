@@ -21,7 +21,7 @@ public class StudentResponseDTO {
     private LocalDate dob;
     private Gender gender;
     private int enrollmentYear;
-    private String className;
+    private ClassResponseDTO classes;
     private BigDecimal gpa;
     private DepartmentResponseDTO department;
 }

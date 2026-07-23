@@ -27,7 +27,9 @@ public class StudentRequestDTO {
     private Long departmentId;
     @NotNull(message = "Năm nhập học không được để trống")
     private Integer enrollmentYear;
-    private String className;
+
+    private Long classId;
+
     @NotBlank(message = "Username không được để trống")
     private String username;
     @NotBlank(message = "Mật khẩu không được để trống")
