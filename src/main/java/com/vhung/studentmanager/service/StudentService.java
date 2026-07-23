@@ -107,7 +107,7 @@ public class StudentService {
         return toDTO(studentSave);
 
     }
-
+    
     public StudentResponseDTO get(Long id){
         Student student = studentRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy sinh viên"));
