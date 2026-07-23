@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface StudentReposistory extends JpaRepository<Student, Long> {
+public interface StudentRepository extends JpaRepository<Student, Long> {
     boolean existsStudentByStudentCode(String studentCode);
 
     boolean existsStudentByStudentCodeAndIdNot(String studentCode, Long id);

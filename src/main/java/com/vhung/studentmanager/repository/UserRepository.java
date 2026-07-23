@@ -2,7 +2,6 @@ package com.vhung.studentmanager.repository;
 
 import com.vhung.studentmanager.entity.Role;
 import com.vhung.studentmanager.entity.User;
-import org.hibernate.boot.models.JpaAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +11,7 @@ import java.util.Optional;
 
 @Repository
 
-public interface UserReposistory extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsUserByUserName(String username);
     //kiểm tra trùng userName khi cập nhật

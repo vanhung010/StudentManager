@@ -8,8 +8,8 @@ import com.vhung.studentmanager.dto.response.StudentResponseDTO;
 import com.vhung.studentmanager.entity.*;
 import com.vhung.studentmanager.exception.AppException;
 import com.vhung.studentmanager.repository.DepartmentRepository;
-import com.vhung.studentmanager.repository.StudentReposistory;
-import com.vhung.studentmanager.repository.UserReposistory;
+import com.vhung.studentmanager.repository.StudentRepository;
+import com.vhung.studentmanager.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,8 +25,8 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 public class StudentService {
     private final DepartmentRepository departmentRepository;
-    private final UserReposistory userReposistory;
-    private final StudentReposistory studentReposistory;
+    private final UserRepository userRepository;
+    private final StudentRepository studentRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -34,15 +34,15 @@ public class StudentService {
         //kieemr tra khoa tồn tại
         Departments departments = departmentRepository.findByIdAndIsDeletedFalse(request.getDepartmentId()).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy khoa"));
         //kiểm tra tên người dùng trùng lặp
-        if(userReposistory.existsUserByUserName(request.getUsername())){
+        if(userRepository.existsUserByUserName(request.getUsername())){
             throw new AppException(HttpStatus.CONFLICT, "Đã tồn tai user name");
         }
         //kiểm tra trùng mã sinh viên
-        if(studentReposistory.existsStudentByStudentCode(request.getStudentCode())){
+        if(studentRepository.existsStudentByStudentCode(request.getStudentCode())){
             throw new AppException(HttpStatus.CONFLICT, "Mã sinh vien đã tồn tại");
         }
         //kiểm tra trùng email
-        if(studentReposistory.existsStudentByEmail(request.getEmail())){
+        if(studentRepository.existsStudentByEmail(request.getEmail())){
             throw new AppException(HttpStatus.CONFLICT, "Email đã tồn tại");
         }
         Gender gender;
@@ -61,7 +61,7 @@ public class StudentService {
                 .isDeleted(false)
                 .build();
 
-        User userSave = userReposistory.save(user);
+        User userSave = userRepository.save(user);
 
         Student student = Student.builder()
                 .user(userSave)
@@ -78,13 +78,13 @@ public class StudentService {
                 .isDeleted(false)
                 .build();
 
-        Student studentSave = studentReposistory.save(student);
+        Student studentSave = studentRepository.save(student);
 
         return toDTO(studentSave);
     }
 
     public StudentResponseDTO update(Long id, UpdateStudentRequest dataUpdate){
-        Student student = studentReposistory.findByIdAndIsDeletedFalse(id)
+        Student student = studentRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy sinh viên"));
 
         student.setFullName(dataUpdate.getFullName());
@@ -92,14 +92,14 @@ public class StudentService {
         student.setPhone(dataUpdate.getPhone());
         student.setClassName(dataUpdate.getClassName());
 
-        Student studentSave = studentReposistory.save(student);
+        Student studentSave = studentRepository.save(student);
 
         return toDTO(studentSave);
 
     }
 
     public StudentResponseDTO get(Long id){
-        Student student = studentReposistory.findByIdAndIsDeletedFalse(id)
+        Student student = studentRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy sinh viên"));
 
         return toDTO(student);
@@ -115,17 +115,17 @@ public class StudentService {
         boolean hasDept = departmentId != null;
 
         if (hasName && hasDept) {
-            students = studentReposistory
+            students = studentRepository
                     .findAllByIsDeletedFalseAndFullNameContainingIgnoreCaseAndDepartmentId(
                             name, departmentId, pageable);
         } else if (hasName) {
-            students = studentReposistory
+            students = studentRepository
                     .findAllByIsDeletedFalseAndFullNameContainingIgnoreCase(name, pageable);
         } else if (hasDept) {
-            students = studentReposistory
+            students = studentRepository
                     .findAllByIsDeletedFalseAndDepartmentId(departmentId, pageable);
         } else {
-            students = studentReposistory.findAllByIsDeletedFalse(pageable);
+            students = studentRepository.findAllByIsDeletedFalse(pageable);
         }
 
         Page<StudentResponseDTO> dtoPage = students.map(this::toDTO);

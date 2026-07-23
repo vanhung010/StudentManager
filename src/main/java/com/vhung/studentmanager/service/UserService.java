@@ -1,6 +1,5 @@
 package com.vhung.studentmanager.service;
 
-import ch.qos.logback.classic.spi.IThrowableProxy;
 import com.vhung.studentmanager.dto.request.UserRequestDTO;
 import com.vhung.studentmanager.dto.response.PageResponse;
 import com.vhung.studentmanager.dto.response.UserResponseDTO;
@@ -8,7 +7,7 @@ import com.vhung.studentmanager.entity.Role;
 import com.vhung.studentmanager.entity.User;
 import com.vhung.studentmanager.exception.AppException;
 
-import com.vhung.studentmanager.repository.UserReposistory;
+import com.vhung.studentmanager.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,7 +20,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserReposistory userReposistory;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     //Thêm user
     public UserResponseDTO create(UserRequestDTO request){
@@ -31,7 +30,7 @@ public class UserService {
         if(request.getPassword().length() < 8 ) {
             throw new AppException(HttpStatus.BAD_REQUEST, "Mật khẩu ít nhất 8 kí tự");
         }
-        if(userReposistory.existsUserByUserName(request.getUserName())){
+        if(userRepository.existsUserByUserName(request.getUserName())){
             throw new AppException(HttpStatus.CONFLICT, "Đã tồn tại tên người dùng");
         }
         User user = new User();
@@ -41,27 +40,27 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setIsDeleted(false);
 
-        User userSave = userReposistory.save(user);
+        User userSave = userRepository.save(user);
 
         return toDTO(userSave);
     }
 
     public UserResponseDTO getUserById(Long id) {
-        User user = userReposistory.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy User"));
+        User user = userRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy User"));
         UserResponseDTO result = toDTO(user);
         return result;
     }
 
     //cập nhật username
     public UserResponseDTO updateUserName(Long id, String userNameUpdate){
-        User user = userReposistory.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy tài khoản"));
-        if(userReposistory.existsUserByUserNameAndIdNot(userNameUpdate, id)){
+        User user = userRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy tài khoản"));
+        if(userRepository.existsUserByUserNameAndIdNot(userNameUpdate, id)){
             throw new AppException(HttpStatus.CONFLICT, "Tên người dùng đã tôn tại");
         }
 
         user.setUserName(userNameUpdate);
 
-        return toDTO(userReposistory.save(user));
+        return toDTO(userRepository.save(user));
     }
 
     //lấy danh sách tất cả user
@@ -77,10 +76,10 @@ public class UserService {
             } catch (IllegalArgumentException e) {
                 throw new AppException(HttpStatus.BAD_REQUEST, "Vai trò lọc không hợp lệ");
             }
-            users = userReposistory.findAllByIsDeletedFalseAndRole(roleEnum, pageable);
+            users = userRepository.findAllByIsDeletedFalseAndRole(roleEnum, pageable);
         }
         else {
-            users = userReposistory.findAllByIsDeletedFalse(pageable);
+            users = userRepository.findAllByIsDeletedFalse(pageable);
         }
         Page<UserResponseDTO> dtoPage = users.map(this::toDTO);
         
