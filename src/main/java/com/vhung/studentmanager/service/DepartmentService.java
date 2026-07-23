@@ -65,7 +65,7 @@ public class DepartmentService {
 
     }
 
-    public DepartmentResponseDTO toDTO(Departments departments){
+    private DepartmentResponseDTO toDTO(Departments departments){
         return new DepartmentResponseDTO(
                 departments.getId(),
                 departments.getName(),
