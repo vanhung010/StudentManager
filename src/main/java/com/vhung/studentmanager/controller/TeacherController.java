@@ -42,8 +42,8 @@ public class TeacherController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<TeacherResponseDTO>> getTeacherById(@PathVariable Long id) {
-        TeacherResponseDTO response = teacherService.getTeacherById(id);
+    public ResponseEntity<ApiResponse<TeacherResponseDTO>> getTeacherById(@PathVariable Long id, Authentication authentication) {
+        TeacherResponseDTO response = teacherService.getTeacherById(id, authentication);
         return ResponseEntity.ok(ApiResponse.ok(response));
     }
 
