@@ -17,11 +17,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     //kiểm tra trùng userName khi cập nhật
     boolean existsUserByUserNameAndIdNot(String userName, Long id);
 
+    Optional<User> findByUserName(String userName);
 
     Optional<User> findByIdAndIsDeletedFalse(Long aLong);
 
     Page<User> findAllByIsDeletedFalse(Pageable pageable);
 
     Page<User> findAllByIsDeletedFalseAndRole(Role role, Pageable pageable);
+
 
 }
