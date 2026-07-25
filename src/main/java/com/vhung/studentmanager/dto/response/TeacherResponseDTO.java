@@ -18,6 +18,7 @@ public class TeacherResponseDTO {
     private String departmentName;
     private Long departmentId;
     private String userName;
+    private String phone_number;
 
 
     public static TeacherResponseDTO fromEntity(Teacher teacher) {
@@ -26,6 +27,7 @@ public class TeacherResponseDTO {
         dto.setTeacherCode(teacher.getTeacherCode());
         dto.setFullName(teacher.getFullName());
         dto.setEmail(teacher.getEmail());
+        dto.setPhone_number(teacher.getPhoneNumber());
 
         if (teacher.getUser() != null) {
             dto.setUserName(teacher.getUser().getUserName());
