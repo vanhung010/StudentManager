@@ -8,6 +8,7 @@ import java.util.Optional;
 
 
 public interface TeacherRepository extends JpaRepository<Teacher, Long>, JpaSpecificationExecutor<Teacher> {
+    Optional<Teacher> findByUser_Username(String username);
 
     Optional<Teacher> findById(Long aLong);
 }  //"JpaSpecificationExecutor" là interface bổ sung để gọi các phương thức tìm kiếm nâng cao, cụ thể ở đây là findAll(Specification, Pageable)

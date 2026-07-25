@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -41,8 +42,16 @@ public class TeacherController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<TeacherResponseDTO>> getTeacherById(@PathVariable Long id) {
-        TeacherResponseDTO response = teacherService.getTeacherById(id);
+    public ResponseEntity<ApiResponse<TeacherResponseDTO>> getTeacherById(@PathVariable Long id, Authentication authentication) {
+        TeacherResponseDTO response = teacherService.getTeacherById(id, authentication);
+        return ResponseEntity.ok(ApiResponse.ok(response));
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<ApiResponse<TeacherResponseDTO>> getCurrentTeacher(Authentication authentication) {
+        String username = authentication.getName();
+        TeacherResponseDTO response = teacherService.getCurrentTeacherByUserName(username);
         return ResponseEntity.ok(ApiResponse.ok(response));
     }
 }
