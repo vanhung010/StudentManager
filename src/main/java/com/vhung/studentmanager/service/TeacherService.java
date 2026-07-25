@@ -34,4 +34,10 @@ public class TeacherService {
 
         return PageResponse.from(dtoPage);
     }
+
+    public TeacherResponseDTO getCurrentTeacherByUserName(String username) {
+        Teacher teacher = teacherRepository.findByUser_Username(username)
+                .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy giảng viên với username: " + username));
+        return TeacherResponseDTO.fromEntity(teacher);
+    }
 }
