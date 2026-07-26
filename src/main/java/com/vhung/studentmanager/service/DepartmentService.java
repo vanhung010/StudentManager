@@ -31,15 +31,13 @@ public class DepartmentService {
         //Convert từ DTO -> Entity
 
         Departments departments = new Departments();
+
         departments.setDepartmentCode(departmentsRequestDTO.getDepartmentCode());
         departments.setName(departmentsRequestDTO.getName());
         departments.setDeleted(false);
         //lưu
         Departments saved = departmentRepository.save(departments);
         //trả về DTO
-
-
-
         return toDTO(saved);
     }
 
