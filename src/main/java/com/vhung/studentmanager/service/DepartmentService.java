@@ -2,10 +2,13 @@ package com.vhung.studentmanager.service;
 
 import com.vhung.studentmanager.dto.request.DepartmentRequestDTO;
 import com.vhung.studentmanager.dto.response.DepartmentResponseDTO;
+import com.vhung.studentmanager.dto.response.PageResponse;
 import com.vhung.studentmanager.entity.Departments;
 import com.vhung.studentmanager.exception.AppException;
 import com.vhung.studentmanager.repository.DepartmentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +21,15 @@ public class DepartmentService {
 
 
     // lấy danh sách tất cả khoa
-    public List<DepartmentResponseDTO> getAllDepartment(){
-        return departmentRepository.findAllByIsDeletedFalse().stream()
-                .map(this::toDTO)
-                .toList();
+    public PageResponse<DepartmentResponseDTO> getAllDepartment(String status, Pageable pageable){
+        Page<Departments> departmentPage = switch (status) {
+            case "active" -> departmentRepository.findAllByIsDeletedFalse(pageable);
+            case "deleted" -> departmentRepository.findAllByIsDeletedTrue(pageable);
+            default -> departmentRepository.findAll(pageable);
+        };
+
+        Page<DepartmentResponseDTO> dtoPage = departmentPage.map(this::toDTO);
+        return PageResponse.from(dtoPage);
     }
 
     public DepartmentResponseDTO create(DepartmentRequestDTO departmentsRequestDTO){
@@ -63,10 +71,22 @@ public class DepartmentService {
 
     }
 
+    //khôi phục
+    public DepartmentResponseDTO restore(Long id){
+        Departments departments = departmentRepository.findByIdAndIsDeletedTrue(id).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "không tìm thấy khoa"));
+
+        departments.setDeleted(false);
+
+        return toDTO(departmentRepository.save(departments));
+    }
+
     private DepartmentResponseDTO toDTO(Departments departments){
         return new DepartmentResponseDTO(
                 departments.getId(),
                 departments.getName(),
-                departments.getDepartmentCode());
+                departments.getDepartmentCode(),
+                departments.isDeleted());
+
+
     }
 }

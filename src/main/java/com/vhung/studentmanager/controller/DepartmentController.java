@@ -3,8 +3,12 @@ package com.vhung.studentmanager.controller;
 import com.vhung.studentmanager.dto.request.DepartmentRequestDTO;
 import com.vhung.studentmanager.dto.response.ApiResponse;
 import com.vhung.studentmanager.dto.response.DepartmentResponseDTO;
+import com.vhung.studentmanager.dto.response.PageResponse;
 import com.vhung.studentmanager.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -20,9 +24,14 @@ public class DepartmentController {
 
     //api/departments
     @GetMapping
-    public ResponseEntity<ApiResponse<List<DepartmentResponseDTO>>> getAll(){
-        List<DepartmentResponseDTO> data = departmentService.getAllDepartment();
-        return ResponseEntity.ok(ApiResponse.ok(data));
+    public ResponseEntity<ApiResponse<PageResponse<DepartmentResponseDTO>>> getAll(
+            @RequestParam(defaultValue = "active") String status,   // active | deleted | all
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ){
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
+        PageResponse<DepartmentResponseDTO> data = departmentService.getAllDepartment(status, pageable);
+        return  ResponseEntity.ok(ApiResponse.ok(data));
     }
 
     //api/departments
@@ -39,6 +48,15 @@ public class DepartmentController {
         DepartmentResponseDTO data = departmentService.update(id, departmentRequestDTO);
         return ResponseEntity.ok(ApiResponse.ok(data));
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ApiResponse<DepartmentResponseDTO>> restore(@PathVariable Long id){
+        DepartmentResponseDTO data = departmentService.restore(id);
+
+        return ResponseEntity.ok(ApiResponse.ok(data));
+    }
+
+
 
     //deleted api/departments/{id}
     @DeleteMapping("/{id}")
