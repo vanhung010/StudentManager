@@ -1,5 +1,6 @@
 package com.vhung.studentmanager.controller;
 
+import com.vhung.studentmanager.dto.request.ForgotPasswordRequestDTO;
 import com.vhung.studentmanager.dto.request.LoginRequestDTO;
 import com.vhung.studentmanager.dto.response.ApiResponse;
 import com.vhung.studentmanager.dto.response.LoginResponseDTO;
@@ -23,5 +24,11 @@ public class AuthController {
         LoginResponseDTO data = authService.login(loginRequestDTO);
 
         return ResponseEntity.ok(ApiResponse.ok(data));
+    }
+
+    @PostMapping("/forgot-password")
+    public ApiResponse<Void> forgotPassword(@RequestBody @Valid ForgotPasswordRequestDTO request) {
+        authService.sendResetOtp(request.getIdentifier());
+        return ApiResponse.ok("Đã gửi mã OTP đến email của bạn", null);
     }
 }
