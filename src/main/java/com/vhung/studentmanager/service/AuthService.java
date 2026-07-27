@@ -69,6 +69,13 @@ public class AuthService {
         emailService.sendOtpEmail(email, otpCode);
     }
 
+    //Kiểm tra xem mã đúng không, còn hạn không
+    public void verifyOtp(String identifier, String inputCode){
+        String userName = resolveUserByIdentifier(identifier).getUserName();
+        OtpStore.OtpEntry entry = otpStore.get(userName);
+        validateOtpEntry(entry, inputCode, identifier);
+    }
+
     private User resolveUserByIdentifier(String identifier){
         //Tìm theo username
         Optional<User> byUserName = userRepository.findByUserName(identifier);
@@ -97,6 +104,7 @@ public class AuthService {
     }
 
     private String resolveEmail(User user) {
+        
         return switch (user.getRole()) {
             case STUDENT -> studentRepository.findByUserId(user.getId())
                     .map(Student::getEmail)
@@ -104,7 +112,9 @@ public class AuthService {
             case TEACHER -> teacherRepository.findByUserId(user.getId())
                     .map(Teacher::getEmail)
                     .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy email"));
-            default -> throw new AppException(HttpStatus.BAD_REQUEST, "Admin không có email đăng ký");
+            case ADMIN -> adminReposistory.findByUserId(user.getId())
+                    .map(Admins::getEmail)
+                    .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy email"));
         };
     }
 
