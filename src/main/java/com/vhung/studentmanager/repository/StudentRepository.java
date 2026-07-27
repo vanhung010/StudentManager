@@ -33,7 +33,9 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Page<Student> findAllByIsDeletedFalseAndFullNameContainingIgnoreCaseAndDepartmentsId(
             String name, Long departmentId, Pageable pageable);
 
+    Optional<Student> findByEmail(String email);
 
+    Optional<Student> findByUserId(Long userId);
 
     boolean existsByStudentCode(String studentCode);
     boolean existsByEmail(String email);
