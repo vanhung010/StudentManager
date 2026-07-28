@@ -5,7 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface ClassesRepository extends JpaRepository<Classes, Long> {
+public interface ClassRepository extends JpaRepository<Classes, Long> {
 
     Optional<Classes> findByIdAndIsDeletedFalse(Long id);
+
+
 }

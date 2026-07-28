@@ -25,12 +25,13 @@ public class DepartmentController {
     //api/departments
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<DepartmentResponseDTO>>> getAll(
-            @RequestParam(defaultValue = "active") String status,   // active | deleted | all
+            @RequestParam(defaultValue = "active") String status,// active | deleted | all
+            @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ){
         Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
-        PageResponse<DepartmentResponseDTO> data = departmentService.getAllDepartment(status, pageable);
+        PageResponse<DepartmentResponseDTO> data = departmentService.getAllDepartment(status, keyword, pageable);
         return  ResponseEntity.ok(ApiResponse.ok(data));
     }
 

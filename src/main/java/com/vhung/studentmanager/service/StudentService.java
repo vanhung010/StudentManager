@@ -10,7 +10,7 @@ import com.vhung.studentmanager.entity.*;
 import com.vhung.studentmanager.entity.enums.Gender;
 import com.vhung.studentmanager.entity.enums.Role;
 import com.vhung.studentmanager.exception.AppException;
-import com.vhung.studentmanager.repository.ClassesRepository;
+import com.vhung.studentmanager.repository.ClassRepository;
 import com.vhung.studentmanager.repository.DepartmentRepository;
 import com.vhung.studentmanager.repository.StudentRepository;
 import com.vhung.studentmanager.repository.UserRepository;
@@ -31,7 +31,7 @@ public class StudentService {
     private final DepartmentRepository departmentRepository;
     private final UserRepository userRepository;
     private final StudentRepository studentRepository;
-    private final ClassesRepository classesRepository;
+    private final ClassRepository classesRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
