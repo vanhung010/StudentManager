@@ -6,9 +6,11 @@ import com.vhung.studentmanager.dto.response.PageResponse;
 import com.vhung.studentmanager.entity.Departments;
 import com.vhung.studentmanager.exception.AppException;
 import com.vhung.studentmanager.repository.DepartmentRepository;
+import com.vhung.studentmanager.specification.DepartmentSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -21,15 +23,17 @@ public class DepartmentService {
 
 
     // lấy danh sách tất cả khoa
-    public PageResponse<DepartmentResponseDTO> getAllDepartment(String status, Pageable pageable){
-        Page<Departments> departmentPage = switch (status) {
-            case "active" -> departmentRepository.findAllByIsDeletedFalse(pageable);
-            case "deleted" -> departmentRepository.findAllByIsDeletedTrue(pageable);
-            default -> departmentRepository.findAll(pageable);
-        };
+    public PageResponse<DepartmentResponseDTO> getAllDepartment(String status, String keyword, Pageable pageable){
+        Specification<Departments> specification = Specification
+                .where(DepartmentSpecification.hasStatus(status))
+                .and(DepartmentSpecification.hasKeyword(keyword));
 
-        Page<DepartmentResponseDTO> dtoPage = departmentPage.map(this::toDTO);
+        Page<Departments> departmentsPage = departmentRepository.findAll(specification, pageable);
+
+        Page<DepartmentResponseDTO> dtoPage = departmentsPage.map(this::toDTO);
+
         return PageResponse.from(dtoPage);
+
     }
 
     public DepartmentResponseDTO create(DepartmentRequestDTO departmentsRequestDTO){
