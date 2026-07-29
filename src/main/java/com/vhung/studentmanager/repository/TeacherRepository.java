@@ -1,6 +1,9 @@
 package com.vhung.studentmanager.repository;
 
 import com.vhung.studentmanager.entity.Teacher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -17,4 +20,7 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long>, JpaSpec
     Optional<Teacher> findByUserId(Long userId);
 
     Optional<Teacher> findById(Long aLong);
+
+    Page<Teacher> findAllByIsDeletedFalse(Specification specification, Pageable pageable);
+
 }  //"JpaSpecificationExecutor" là interface bổ sung để gọi các phương thức tìm kiếm nâng cao, cụ thể ở đây là findAll(Specification, Pageable)

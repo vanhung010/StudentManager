@@ -4,6 +4,7 @@ import com.vhung.studentmanager.entity.Teacher;
 import org.springframework.data.jpa.domain.Specification;
 
 public class TeacherSpecification {
+
     public static Specification<Teacher> hasName(String name) {
         return (root, query, cb) -> {
             if (name == null || name.isBlank()) {
@@ -12,6 +13,7 @@ public class TeacherSpecification {
             return cb.like(cb.lower(root.get("fullName")), "%" + name.toLowerCase() + "%");
         };
     }
+
 
     public static Specification<Teacher> hasDepartmentId(Long departmentId) {
         return (root, query, cb) -> {
