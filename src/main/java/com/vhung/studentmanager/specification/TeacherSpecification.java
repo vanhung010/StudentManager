@@ -23,4 +23,8 @@ public class TeacherSpecification {
             return cb.equal(root.get("department").get("id"), departmentId);
         };
     }
+
+    public static Specification<Teacher> isNotDeleted() {
+        return (root, query, cb) -> cb.isFalse(root.get("isDeleted"));
+    }
 }

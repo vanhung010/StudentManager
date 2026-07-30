@@ -21,6 +21,5 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long>, JpaSpec
 
     Optional<Teacher> findById(Long aLong);
 
-    Page<Teacher> findAllByIsDeletedFalse(Specification specification, Pageable pageable);
 
 }  //"JpaSpecificationExecutor" là interface bổ sung để gọi các phương thức tìm kiếm nâng cao, cụ thể ở đây là findAll(Specification, Pageable)

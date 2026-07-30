@@ -41,7 +41,7 @@ public class TeacherService {
                 .where(TeacherSpecification.hasName(name))
                 .and(TeacherSpecification.hasDepartmentId(departmentId));
 
-        Page<Teacher> teacherPage = teacherRepository.findAllByIsDeletedFalse(spec, pageable);
+        Page<Teacher> teacherPage = teacherRepository.findAll(spec, pageable);
         Page<TeacherResponseDTO> dtoPage = teacherPage.map(TeacherResponseDTO::fromEntity);
 
         return PageResponse.from(dtoPage);
