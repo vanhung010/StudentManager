@@ -6,6 +6,7 @@ import com.vhung.studentmanager.dto.response.ClassResponseDTO;
 import com.vhung.studentmanager.dto.response.PageResponse;
 import com.vhung.studentmanager.service.ClassService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,7 @@ public class ClassController {
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<ClassResponseDTO>>> getAll(
             @RequestParam(required = false)  String keyword,
-            @RequestParam(defaultValue = "active") String status,
+            @RequestParam(required = false) String status,
             @RequestParam(required = false) Integer enrollmentYear,
             @RequestParam(required = false)  Long idDepartment,
             @RequestParam(defaultValue = "0") int page,
@@ -41,7 +42,11 @@ public class ClassController {
 
         return ResponseEntity.ok(ApiResponse.ok(data));
 
-
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleted(@PathVariable Long id){
+        classService.deleted(id);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
 }

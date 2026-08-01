@@ -69,6 +69,14 @@ public class ClassService {
 
     }
 
+    public void deleted(Long id){
+        Classes classes = classRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy lớp"));
+
+        classes.setIsDeleted(true);
+
+        classRepository.save(classes);
+    }
+
     private ClassResponseDTO toDTO(Classes classes, int totalStudent){
         ClassResponseDTO result = ClassResponseDTO.builder()
                 .id(classes.getId())
@@ -77,9 +85,12 @@ public class ClassService {
                 .departmentCode(classes.getDepartment().getDepartmentCode())
                 .fullNameTeacher(classes.getAdvisor().getFullName())
                 .totalStudents(totalStudent)
+                .isDeleted(classes.getIsDeleted())
                 .enrollmentYear(classes.getEnrollmentYear()).build();
 
         return result;
 
     }
+
+
 }
