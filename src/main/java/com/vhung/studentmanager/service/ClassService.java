@@ -69,6 +69,19 @@ public class ClassService {
 
     }
 
+    public ClassResponseDTO restore(Long id){
+
+        Classes classes = classRepository.findById(id).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy lớp"));
+
+        classes.setIsDeleted(false);
+
+       Classes classSave =  classRepository.save(classes);
+
+       int totalStudent = studentRepository.countByClassesIdAndIsDeletedIsFalse(classSave.getId());
+
+        return toDTO(classSave, totalStudent);
+    }
+
     public void deleted(Long id){
         Classes classes = classRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy lớp"));
 

@@ -44,6 +44,14 @@ public class ClassController {
 
     }
 
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ApiResponse<ClassResponseDTO>> restore(@PathVariable Long id){
+        ClassResponseDTO data = classService.restore(id);
+        return ResponseEntity.ok(ApiResponse.ok(data));
+    }
+
+
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleted(@PathVariable Long id){
         classService.deleted(id);
