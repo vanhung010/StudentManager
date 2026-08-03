@@ -45,7 +45,7 @@ public class ClassSpecification {
                 return null;
             }
             else {
-                String search = "%".concat(keyword).concat("%");
+                String search = "%".concat(keyword.toLowerCase()).concat("%");
                 return criteriaBuilder.or(
                         criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), search),
                         criteriaBuilder.like(criteriaBuilder.lower(root.get("classCode")), search));

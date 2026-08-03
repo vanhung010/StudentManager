@@ -19,6 +19,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ClassService {
@@ -69,6 +71,15 @@ public class ClassService {
 
     }
 
+    public ClassResponseDTO get(Long id){
+
+        Classes classes = classRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy lớp"));
+
+        int totalStudent = studentRepository.countByClassesIdAndIsDeletedIsFalse(id);
+
+        return toDTO(classes, totalStudent);
+    }
+
     public ClassResponseDTO restore(Long id){
 
         Classes classes = classRepository.findById(id).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy lớp"));
@@ -90,6 +101,10 @@ public class ClassService {
         classRepository.save(classes);
     }
 
+    public List<Integer> getAllEnrollmentYear(){
+        return classRepository.findDistinctEnrollmentYear();
+    }
+
     private ClassResponseDTO toDTO(Classes classes, int totalStudent){
         ClassResponseDTO result = ClassResponseDTO.builder()
                 .id(classes.getId())
@@ -99,6 +114,8 @@ public class ClassService {
                 .fullNameTeacher(classes.getAdvisor().getFullName())
                 .totalStudents(totalStudent)
                 .isDeleted(classes.getIsDeleted())
+                .departmentId(classes.getDepartment().getId())
+                .advisorId((classes.getAdvisor().getId()))
                 .enrollmentYear(classes.getEnrollmentYear()).build();
 
         return result;

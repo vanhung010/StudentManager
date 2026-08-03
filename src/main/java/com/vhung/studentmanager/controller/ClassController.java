@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/classes")
 @RequiredArgsConstructor
@@ -52,9 +54,23 @@ public class ClassController {
     }
 
 
+    @GetMapping("/enrollment-years")
+    public ResponseEntity<ApiResponse<List<Integer>>> getAllEnrollmentYear(){
+        List<Integer> data = classService.getAllEnrollmentYear();
+        return ResponseEntity.ok(ApiResponse.ok(data));
+    }
+
+
+    @GetMapping("{id}")
+    public ResponseEntity<ApiResponse<ClassResponseDTO>> get(@PathVariable Long id){
+        ClassResponseDTO data = classService.get(id);
+
+        return ResponseEntity.ok(ApiResponse.ok(data));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleted(@PathVariable Long id){
         classService.deleted(id);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(null));
     }
 }
