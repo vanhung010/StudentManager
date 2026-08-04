@@ -23,10 +23,11 @@ public class DepartmentService {
 
 
     // lấy danh sách tất cả khoa
-    public PageResponse<DepartmentResponseDTO> getAllDepartment(String status, String keyword, Pageable pageable){
+    public PageResponse<DepartmentResponseDTO> getAllDepartment(String status, String keyword,Long idClass, Pageable pageable){
         Specification<Departments> specification = Specification
                 .where(DepartmentSpecification.hasStatus(status))
-                .and(DepartmentSpecification.hasKeyword(keyword));
+                .and(DepartmentSpecification.hasKeyword(keyword))
+                .and(DepartmentSpecification.hasIdClass(idClass));
 
         Page<Departments> departmentsPage = departmentRepository.findAll(specification, pageable);
 
