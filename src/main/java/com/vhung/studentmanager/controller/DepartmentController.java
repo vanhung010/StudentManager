@@ -58,11 +58,18 @@ public class DepartmentController {
     }
 
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<DepartmentResponseDTO>> get(@PathVariable Long id){
+        DepartmentResponseDTO data = departmentService.get(id);
 
-    //deleted api/departments/{id}
+        return ResponseEntity.ok(ApiResponse.ok(data));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleted(@PathVariable Long id){
         departmentService.deleted(id);
         return ResponseEntity.ok(ApiResponse.ok(null));
     }
+
+
 }

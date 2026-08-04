@@ -2,6 +2,7 @@ package com.vhung.studentmanager.service;
 
 import com.vhung.studentmanager.dto.request.ClassRequestDTO;
 import com.vhung.studentmanager.dto.response.ClassResponseDTO;
+import com.vhung.studentmanager.dto.response.PageResponse;
 import com.vhung.studentmanager.entity.Classes;
 import com.vhung.studentmanager.entity.Departments;
 import com.vhung.studentmanager.entity.Teacher;
@@ -10,9 +11,15 @@ import com.vhung.studentmanager.repository.ClassRepository;
 import com.vhung.studentmanager.repository.DepartmentRepository;
 import com.vhung.studentmanager.repository.StudentRepository;
 import com.vhung.studentmanager.repository.TeacherRepository;
+import com.vhung.studentmanager.specification.ClassSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +52,73 @@ public class ClassService {
 
     }
 
+    public PageResponse<ClassResponseDTO> getAll(String keyword, Integer enrollmentYear, String stauts, Long idDepartment, Pageable pageable){
+
+        Specification<Classes> specification = Specification
+                .where(ClassSpecification.hasKeyword(keyword))
+                .and(ClassSpecification.hasEnrollmentYear(enrollmentYear))
+                .and(ClassSpecification.hasStatus(stauts))
+                .and(ClassSpecification.hasIdDepartment(idDepartment));
+
+        Page<Classes> classPage = classRepository.findAll(specification, pageable);
+
+        Page<ClassResponseDTO> dtoPage = classPage.map(classEntity -> {
+            int totalStudent = studentRepository.countByClassesIdAndIsDeletedIsFalse(classEntity.getId());
+            return toDTO(classEntity, totalStudent);
+        });
+
+        return PageResponse.from(dtoPage);
+
+    }
+
+    public ClassResponseDTO get(Long id){
+
+        Classes classes = classRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy lớp"));
+
+        int totalStudent = studentRepository.countByClassesIdAndIsDeletedIsFalse(id);
+
+        return toDTO(classes, totalStudent);
+    }
+
+    public ClassResponseDTO restore(Long id){
+
+        Classes classes = classRepository.findById(id).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy lớp"));
+
+        classes.setIsDeleted(false);
+
+       Classes classSave =  classRepository.save(classes);
+
+       int totalStudent = studentRepository.countByClassesIdAndIsDeletedIsFalse(classSave.getId());
+
+        return toDTO(classSave, totalStudent);
+    }
+
+    public ClassResponseDTO update(Long classId, Long advisorId){
+        Classes classes = classRepository.findByIdAndIsDeletedFalse(classId).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy lớp"));
+
+        Teacher teacher = teacherRepository.findByIdAndIsDeletedFalse(advisorId).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy giáo viên"));
+
+        classes.setAdvisor(teacher);
+
+        Classes classSave = classRepository.save(classes);
+
+        int totalStudent = studentRepository.countByClassesIdAndIsDeletedIsFalse(classId);
+
+        return toDTO(classSave, totalStudent);
+    }
+
+    public void deleted(Long id){
+        Classes classes = classRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy lớp"));
+
+        classes.setIsDeleted(true);
+
+        classRepository.save(classes);
+    }
+
+    public List<Integer> getAllEnrollmentYear(){
+        return classRepository.findDistinctEnrollmentYear();
+    }
+
     private ClassResponseDTO toDTO(Classes classes, int totalStudent){
         ClassResponseDTO result = ClassResponseDTO.builder()
                 .id(classes.getId())
@@ -53,9 +127,14 @@ public class ClassService {
                 .departmentCode(classes.getDepartment().getDepartmentCode())
                 .fullNameTeacher(classes.getAdvisor().getFullName())
                 .totalStudents(totalStudent)
+                .isDeleted(classes.getIsDeleted())
+                .departmentId(classes.getDepartment().getId())
+                .advisorId((classes.getAdvisor().getId()))
                 .enrollmentYear(classes.getEnrollmentYear()).build();
 
         return result;
 
     }
+
+
 }

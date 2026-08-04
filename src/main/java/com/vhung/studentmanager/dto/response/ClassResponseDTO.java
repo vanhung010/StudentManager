@@ -15,4 +15,7 @@ public class ClassResponseDTO {
     private String fullNameTeacher;
     private Integer totalStudents;
     private Integer enrollmentYear;
+    private Long departmentId;
+    private Long advisorId;
+    private Boolean isDeleted;
 }

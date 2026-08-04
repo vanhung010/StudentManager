@@ -68,8 +68,6 @@ public class DepartmentService {
 
     public void deleted(Long id){
         Departments departments = departmentRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy khoa"));
-
-
         departments.setDeleted(true);
         departmentRepository.save(departments);
 
@@ -82,6 +80,12 @@ public class DepartmentService {
         departments.setDeleted(false);
 
         return toDTO(departmentRepository.save(departments));
+    }
+
+    public DepartmentResponseDTO get(Long id){
+        Departments departments = departmentRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy khoa"));
+
+        return toDTO(departments);
     }
 
     private DepartmentResponseDTO toDTO(Departments departments){

@@ -22,7 +22,6 @@ public class TeacherController {
 
     // Lấy DANH SÁCH giảng viên, có phân trang và có thể lọc theo tên/khoa.
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<PageResponse<TeacherResponseDTO>>> getTeachers(
             @RequestParam(defaultValue = "0") int page,             // Trang thứ mấy, mặc định trang 0
             @RequestParam(defaultValue = "20") int size,            // Mỗi trang bao nhiêu giảng viên, mặc định 20
