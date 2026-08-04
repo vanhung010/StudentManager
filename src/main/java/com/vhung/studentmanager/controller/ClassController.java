@@ -4,6 +4,7 @@ import com.vhung.studentmanager.dto.request.ClassRequestDTO;
 import com.vhung.studentmanager.dto.response.ApiResponse;
 import com.vhung.studentmanager.dto.response.ClassResponseDTO;
 import com.vhung.studentmanager.dto.response.PageResponse;
+import com.vhung.studentmanager.entity.Classes;
 import com.vhung.studentmanager.service.ClassService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Null;
@@ -57,6 +58,14 @@ public class ClassController {
     @GetMapping("/enrollment-years")
     public ResponseEntity<ApiResponse<List<Integer>>> getAllEnrollmentYear(){
         List<Integer> data = classService.getAllEnrollmentYear();
+        return ResponseEntity.ok(ApiResponse.ok(data));
+    }
+
+    @PutMapping("/{id}/advivor")
+    public ResponseEntity<ApiResponse<ClassResponseDTO>> update(@PathVariable Long id,
+                                                                @RequestParam Long advisorId){
+        ClassResponseDTO data = classService.update(id, advisorId);
+
         return ResponseEntity.ok(ApiResponse.ok(data));
     }
 

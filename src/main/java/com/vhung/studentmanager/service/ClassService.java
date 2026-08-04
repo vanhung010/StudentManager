@@ -93,6 +93,20 @@ public class ClassService {
         return toDTO(classSave, totalStudent);
     }
 
+    public ClassResponseDTO update(Long classId, Long advisorId){
+        Classes classes = classRepository.findByIdAndIsDeletedFalse(classId).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy lớp"));
+
+        Teacher teacher = teacherRepository.findByIdAndIsDeletedFalse(advisorId).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy giáo viên"));
+
+        classes.setAdvisor(teacher);
+
+        Classes classSave = classRepository.save(classes);
+
+        int totalStudent = studentRepository.countByClassesIdAndIsDeletedIsFalse(classId);
+
+        return toDTO(classSave, totalStudent);
+    }
+
     public void deleted(Long id){
         Classes classes = classRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy lớp"));
 

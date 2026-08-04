@@ -12,7 +12,7 @@ import java.util.List;
 
 public class PageResponse<T> {
     private List<T> content;
-    private long totalElement;
+    private long totalElements;
     private int totalPages;
     private int currentPage;
     private int pageSize;
@@ -20,7 +20,7 @@ public class PageResponse<T> {
     public static <T> PageResponse<T> from(Page<T> page){
         return PageResponse.<T>builder()
                 .content(page.getContent())
-                .totalElement(page.getTotalElements())
+                .totalElements(page.getTotalElements())
                 .totalPages(page.getTotalPages())
                 .currentPage(page.getNumber())
                 .pageSize(page.getSize())
