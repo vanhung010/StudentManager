@@ -70,7 +70,7 @@ public class ClassController {
     }
 
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ClassResponseDTO>> get(@PathVariable Long id){
         ClassResponseDTO data = classService.get(id);
 
