@@ -25,8 +25,10 @@ public class StudentController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) Long departmentId) {
-        PageResponse<StudentResponseDTO> data = studentService.getAll(page, size, name, departmentId);
+            @RequestParam(required = false) Long departmentId,
+            @RequestParam(required = false) Integer enrollmentYear,
+            @RequestParam(required = false) String status) {
+        PageResponse<StudentResponseDTO> data = studentService.getAll(page, size, name, departmentId, enrollmentYear, status);
 
         return ResponseEntity.ok(ApiResponse.ok(data));
     }

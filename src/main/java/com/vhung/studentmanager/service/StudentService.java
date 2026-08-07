@@ -14,16 +14,19 @@ import com.vhung.studentmanager.repository.ClassRepository;
 import com.vhung.studentmanager.repository.DepartmentRepository;
 import com.vhung.studentmanager.repository.StudentRepository;
 import com.vhung.studentmanager.repository.UserRepository;
+import com.vhung.studentmanager.specification.StudentSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -115,28 +118,18 @@ public class StudentService {
         return toDTO(student);
     }
 
-    public PageResponse<StudentResponseDTO> getAll(int page, int size, String name, Long departmentId){
+    public PageResponse<StudentResponseDTO> getAll(int page, int size, String keyword, Long departmentId, Integer enrollmentYear, String status){
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<Student> students;
 
-        boolean hasName = name != null && !name.isBlank();
+        Specification<Student> specification = Specification
+                .where(StudentSpecification.hasDepartmentId(departmentId))
+                .and(StudentSpecification.hasEnrollmentYear(enrollmentYear))
+                .and(StudentSpecification.hasStatus(status))
+                .and(StudentSpecification.hasKeyword(keyword));
 
-        boolean hasDept = departmentId != null;
+        Page<Student> students = studentRepository.findAll(specification, pageable);
 
-        if (hasName && hasDept) {
-            students = studentRepository
-                    .findAllByIsDeletedFalseAndFullNameContainingIgnoreCaseAndDepartmentsId(
-                            name, departmentId, pageable);
-        } else if (hasName) {
-            students = studentRepository
-                    .findAllByIsDeletedFalseAndFullNameContainingIgnoreCase(name, pageable);
-        } else if (hasDept) {
-            students = studentRepository
-                    .findAllByIsDeletedFalseAndDepartmentsId(departmentId, pageable);
-        } else {
-            students = studentRepository.findAllByIsDeletedFalse(pageable);
-        }
 
         Page<StudentResponseDTO> dtoPage = students.map(this::toDTO);
 
