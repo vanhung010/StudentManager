@@ -24,4 +24,5 @@ public class StudentResponseDTO {
     private ClassResponseDTO classes;
     private BigDecimal gpa;
     private DepartmentResponseDTO department;
+    private Boolean isDeleted;
 }

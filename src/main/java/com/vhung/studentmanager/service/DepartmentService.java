@@ -5,6 +5,7 @@ import com.vhung.studentmanager.dto.response.DepartmentResponseDTO;
 import com.vhung.studentmanager.dto.response.PageResponse;
 import com.vhung.studentmanager.entity.Departments;
 import com.vhung.studentmanager.exception.AppException;
+import com.vhung.studentmanager.repository.ClassRepository;
 import com.vhung.studentmanager.repository.DepartmentRepository;
 import com.vhung.studentmanager.specification.DepartmentSpecification;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor //Tujw sinh constructor
 public class DepartmentService {
     private final DepartmentRepository departmentRepository;
-
+    private final ClassRepository classRepository;
 
     // lấy danh sách tất cả khoa
     public PageResponse<DepartmentResponseDTO> getAllDepartment(String status, String keyword,Long idClass, Pageable pageable){
@@ -69,6 +70,12 @@ public class DepartmentService {
 
     public void deleted(Long id){
         Departments departments = departmentRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy khoa"));
+
+        if(classRepository.existsByIsDeletedIsFalseAndDepartment_Id(id)) {
+            throw new AppException(HttpStatus.CONFLICT, "Khoa còn lớp học, không thể xóa");
+        }
+
+
         departments.setDeleted(true);
         departmentRepository.save(departments);
 

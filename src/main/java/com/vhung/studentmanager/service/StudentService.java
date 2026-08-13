@@ -137,6 +137,12 @@ public class StudentService {
 
     }
 
+    public void deleted(Long id){
+        Student student = studentRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy sinh viên"));
+        student.setIsDeleted(true);
+        studentRepository.save(student);
+    }
+
     private StudentResponseDTO toDTO(Student student) {
         return StudentResponseDTO.builder()
                 .id(student.getId())
@@ -158,6 +164,7 @@ public class StudentService {
                         .departmentCode(student.getDepartments().getDepartmentCode())
                         .name(student.getDepartments().getName())
                         .build())
+                .isDeleted(student.getIsDeleted())
                 .build();
     }
 

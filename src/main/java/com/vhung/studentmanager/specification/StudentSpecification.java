@@ -39,7 +39,7 @@ public class StudentSpecification {
        return ((root, query, criteriaBuilder) -> {
            if(!StringUtils.hasText(keyword)) return null;
 
-           String search = "%".concat(keyword).concat("%");
+           String search = "%".concat(keyword.toLowerCase()).concat("%");
 
            return criteriaBuilder.like(criteriaBuilder.lower(root.get("fullName")), search);
        });
