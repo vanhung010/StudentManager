@@ -27,4 +27,7 @@ public class TeacherSpecification {
     public static Specification<Teacher> isNotDeleted() {
         return (root, query, cb) -> cb.isFalse(root.get("isDeleted"));
     }
+    public static Specification<Teacher> isDeleted() {
+        return (root, query, cb) -> cb.isTrue(root.get("isDeleted"));
+    }
 }

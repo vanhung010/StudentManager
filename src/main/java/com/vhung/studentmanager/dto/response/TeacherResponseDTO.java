@@ -15,10 +15,11 @@ public class TeacherResponseDTO {
     private String teacherCode;
     private String fullName;
     private String email;
-    private String departmentName;
+    private String departmentCode;
     private Long departmentId;
     private String userName;
     private String phone_number;
+    private Boolean isDeleted;
 
 
     public static TeacherResponseDTO fromEntity(Teacher teacher) {
@@ -28,6 +29,7 @@ public class TeacherResponseDTO {
         dto.setFullName(teacher.getFullName());
         dto.setEmail(teacher.getEmail());
         dto.setPhone_number(teacher.getPhoneNumber());
+        dto.setIsDeleted(teacher.getIsDeleted());
 
         if (teacher.getUser() != null) {
             dto.setUserName(teacher.getUser().getUserName());
@@ -35,7 +37,7 @@ public class TeacherResponseDTO {
 
         if (teacher.getDepartment() != null) {
             dto.setDepartmentId(teacher.getDepartment().getId());
-            dto.setDepartmentName(teacher.getDepartment().getName());
+            dto.setDepartmentCode(teacher.getDepartment().getDepartmentCode());
         }
         return dto;
     }

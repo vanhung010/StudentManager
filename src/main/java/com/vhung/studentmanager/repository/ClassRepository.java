@@ -1,6 +1,7 @@
 package com.vhung.studentmanager.repository;
 
 import com.vhung.studentmanager.entity.Classes;
+import org.springframework.data.jpa.domain.UpdateSpecification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -12,7 +13,9 @@ public interface ClassRepository extends JpaRepository<Classes, Long>, JpaSpecif
 
     Optional<Classes> findByIdAndIsDeletedFalse(Long id);
 
+    boolean existsByIsDeletedIsFalseAndDepartment_Id(Long id);
 
+    boolean existsByClassCode(String classCode);
 
     @Query("""
 SELECT DISTINCT enrollmentYear FROM Classes WHERE isDeleted = false ORDER BY enrollmentYear DESC

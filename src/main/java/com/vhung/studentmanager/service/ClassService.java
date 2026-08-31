@@ -31,12 +31,17 @@ public class ClassService {
     private final TeacherRepository teacherRepository;
 
     public ClassResponseDTO save(ClassRequestDTO request){
+        if (classRepository.existsByClassCode(request.getClassCode())) {
+            throw new AppException(HttpStatus.CONFLICT, "Mã lớp đã tồn tại");
+        }
         //Tạo khoa
         Departments departments = departmentRepository.findByIdAndIsDeletedFalse(request.getDepartmentId())
                 .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "không tìm thấy khoa hoặc khoa đã bị xóa"));
         //Tạo giảng viên
         Teacher teacher = teacherRepository.findByIdAndIsDeletedFalse(request.getAdvisorId())
                 .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy cố vấn hoặc đã bị xóa"));
+
+
         //Tạo Class
         Classes classes = Classes.builder()
                 .classCode(request.getClassCode())
@@ -104,16 +109,22 @@ public class ClassService {
 
         int totalStudent = studentRepository.countByClassesIdAndIsDeletedIsFalse(classId);
 
+
         return toDTO(classSave, totalStudent);
     }
 
     public void deleted(Long id){
         Classes classes = classRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy lớp"));
-
+        int totalStudent = studentRepository.countByClassesIdAndIsDeletedIsFalse(id);
+        if(totalStudent > 0 ){
+            throw new AppException(HttpStatus.CONFLICT, "Lớp học còn "+totalStudent+" học sinh. Không thể xóa");
+        }
         classes.setIsDeleted(true);
 
         classRepository.save(classes);
     }
+
+
 
     public List<Integer> getAllEnrollmentYear(){
         return classRepository.findDistinctEnrollmentYear();

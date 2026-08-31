@@ -25,8 +25,10 @@ public class StudentController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) Long departmentId) {
-        PageResponse<StudentResponseDTO> data = studentService.getAll(page, size, name, departmentId);
+            @RequestParam(required = false) Long departmentId,
+            @RequestParam(required = false) Integer enrollmentYear,
+            @RequestParam(required = false) String status) {
+        PageResponse<StudentResponseDTO> data = studentService.getAll(page, size, name, departmentId, enrollmentYear, status);
 
         return ResponseEntity.ok(ApiResponse.ok(data));
     }
@@ -46,5 +48,10 @@ public class StudentController {
     public ResponseEntity<ApiResponse<StudentResponseDTO>> update(@PathVariable Long id, @RequestBody UpdateStudentRequest request){
         StudentResponseDTO studentResponseDTO = studentService.update(id, request);
         return ResponseEntity.status(200).body(ApiResponse.ok(studentResponseDTO));
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleted(@PathVariable Long id){
+        studentService.deleted(id);
+        return ResponseEntity.ok(ApiResponse.ok(null));
     }
 }

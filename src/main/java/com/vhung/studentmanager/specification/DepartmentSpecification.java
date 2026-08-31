@@ -1,6 +1,8 @@
 package com.vhung.studentmanager.specification;
 
+import com.vhung.studentmanager.entity.Classes;
 import com.vhung.studentmanager.entity.Departments;
+import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
 
 public class DepartmentSpecification  {
@@ -33,6 +35,14 @@ public class DepartmentSpecification  {
             return criteriaBuilder.or(
                     criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), patternSearch ),
                     criteriaBuilder.like(criteriaBuilder.lower(root.get("departmentCode")), patternSearch));
+        };
+    }
+
+    public static Specification<Departments> hasIdClass(Long id){
+        return (root, query, criteriaBuilder) -> {
+            if(id == null) return null;
+            Join<Departments, Classes> classJoin = root.join("classes");
+            return criteriaBuilder.equal(classJoin.get("id"), id);
         };
     }
 }

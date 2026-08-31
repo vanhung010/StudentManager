@@ -12,14 +12,17 @@ import java.util.Optional;
 
 public interface TeacherRepository extends JpaRepository<Teacher, Long>, JpaSpecificationExecutor<Teacher> {
     Optional<Teacher> findByUser_UserName(String username);
-
     Optional<Teacher> findByIdAndIsDeletedFalse(Long id);
-
     Optional<Teacher> findByEmail(String email);
-
     Optional<Teacher> findByUserId(Long userId);
 
-    Optional<Teacher> findById(Long aLong);
+    boolean existsByTeacherCode(String teacherCode);
+    boolean existsByTeacherCodeAndIdNot(String teacherCode, Long id);
 
+    boolean existsByEmail(String email);
+    boolean existsByEmailAndIdNot(String email, Long id);
 
-}  //"JpaSpecificationExecutor" là interface bổ sung để gọi các phương thức tìm kiếm nâng cao, cụ thể ở đây là findAll(Specification, Pageable)
+    boolean existsByPhoneNumberContainingIgnoreCase(String phoneNumber);
+    boolean existsByPhoneNumberContainingIgnoreCaseAndIdNot(String phoneNumber, Long id);
+
+}
