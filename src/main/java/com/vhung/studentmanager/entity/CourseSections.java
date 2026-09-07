@@ -15,6 +15,9 @@ public class CourseSections extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
+    
+    @Column(name = "section_code", nullable = false, unique = true)
+    private String sectionCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "semester_id", nullable = false)
