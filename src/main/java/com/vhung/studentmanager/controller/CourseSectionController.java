@@ -6,6 +6,7 @@ import com.vhung.studentmanager.dto.response.CourseSectionResponseDTO;
 import com.vhung.studentmanager.dto.response.PageResponse;
 import com.vhung.studentmanager.service.CourseSectionService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -42,5 +43,20 @@ public class CourseSectionController {
     ) {
         CourseSectionResponseDTO data = courseSectionService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok("Mở lớp học phần thành công", data));
+    }
+    //Đóng
+    @PatchMapping("/{id}/close")
+    public ResponseEntity<ApiResponse<CourseSectionResponseDTO>> close(@PathVariable Long id){
+        CourseSectionResponseDTO data = courseSectionService.close(id);
+
+        return ResponseEntity.ok(ApiResponse.ok(data));
+    }
+
+    //Xóa
+    @DeleteMapping("{id}/deleted")
+    public ResponseEntity<ApiResponse<CourseSectionResponseDTO>> deleted(@PathVariable Long id){
+        CourseSectionResponseDTO data = courseSectionService.deleted(id);
+
+        return ResponseEntity.ok(ApiResponse.ok(data));
     }
 }

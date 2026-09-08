@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface CourseSectionRepository extends JpaRepository<CourseSections, Long>, JpaSpecificationExecutor<CourseSections> {
     boolean existsByCourse_IdAndSemester_IdAndTeacher_Id(Long courseId, Long semesterId, Long teacherId);
@@ -12,5 +14,6 @@ public interface CourseSectionRepository extends JpaRepository<CourseSections, L
     long countByCourse_IdAndSemester_Id(Long courseId, Long semesterId);
 
     boolean existsBySectionCode(String sectionCode);
-    
+
+    Optional<CourseSections> findById(Long id);
 }

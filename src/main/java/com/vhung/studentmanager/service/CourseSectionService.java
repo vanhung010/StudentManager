@@ -9,10 +9,7 @@ import com.vhung.studentmanager.entity.Semesters;
 import com.vhung.studentmanager.entity.Teacher;
 import com.vhung.studentmanager.entity.enums.SectionStatus;
 import com.vhung.studentmanager.exception.AppException;
-import com.vhung.studentmanager.repository.CourseReposistory;
-import com.vhung.studentmanager.repository.CourseSectionRepository;
-import com.vhung.studentmanager.repository.SemesterRepository;
-import com.vhung.studentmanager.repository.TeacherRepository;
+import com.vhung.studentmanager.repository.*;
 import com.vhung.studentmanager.specification.CourseSectionSpecification;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +29,7 @@ public class CourseSectionService {
     private final CourseReposistory courseReposistory;
     private final SemesterRepository semesterRepository;
     private final TeacherRepository teacherRepository;
+    private final EnrollmentRepository enrollmentRepository;
 
     public PageResponse<CourseSectionResponseDTO> getAll(
             Long semesterId, Long courseId, Long teacherId, String status, Pageable pageable) {
@@ -88,6 +86,44 @@ public class CourseSectionService {
 
         // Lớp vừa mở
         return toDTO(saved, 0);
+    }
+
+    public CourseSectionResponseDTO close(Long id){
+        CourseSections courseSections = courseSectionsRepository.findById(id).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy lớp"));
+        //Kiểm tra điều kiện
+        if(courseSections.getStatus().equals(SectionStatus.CANCELLED)){
+            throw new AppException(HttpStatus.BAD_REQUEST, "Lớp học hiện tại đã khóa");
+        }
+        else if(courseSections.getStatus().equals(SectionStatus.CLOSED)){
+            throw new AppException(HttpStatus.BAD_REQUEST, "Lớp học hiện tại đang khóa");
+        }
+
+        courseSections.setStatus(SectionStatus.CLOSED);
+
+        CourseSections courseSectionsSave = courseSectionsRepository.save(courseSections);
+
+        int studentEnrollment = enrollmentRepository.countByCourseSection_Id(id);
+        return toDTO(courseSectionsSave, studentEnrollment);
+
+    }
+
+    public CourseSectionResponseDTO deleted(Long id){
+        CourseSections courseSections = courseSectionsRepository.findById(id).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy lớp học phần"));
+        if(courseSections.getStatus().equals(SectionStatus.CANCELLED)){
+            throw new AppException(HttpStatus.BAD_REQUEST, "Lớp học hiện tại đã bị xóa");
+        }
+
+        int enrolledCount = enrollmentRepository.countByCourseSection_Id(id);
+
+        if(enrolledCount != 0) {
+            throw new AppException(HttpStatus.BAD_REQUEST, "Sĩ số lớp học phần hiện tại lớn hơn 0");
+        }
+
+        courseSections.setStatus(SectionStatus.CANCELLED);
+
+        CourseSections courseSectionsSave = courseSectionsRepository.save(courseSections);
+
+        return  toDTO(courseSectionsSave, 0);
     }
 
     private CourseSectionResponseDTO toDTO(CourseSections section, Integer enrolledCount) {

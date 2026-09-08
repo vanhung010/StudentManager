@@ -36,8 +36,6 @@ public class Student extends BaseEntity{
     private Gender gender;
     @Column(name = "enrollment_year", nullable = false)
     private Integer enrollmentYear;
-
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "class_id")
     private Classes classes;
