@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(grep -E \"\\\\.\\(java|class\\)$\")"
+      "Bash(grep -E \"\\\\.\\(java|class\\)$\")",
+      "Bash(find D:vanhungjavaprojectStudentManager -type f -name *CourseSection*)"
     ]
   }
 }

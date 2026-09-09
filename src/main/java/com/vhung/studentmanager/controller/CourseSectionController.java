@@ -53,10 +53,26 @@ public class CourseSectionController {
     }
 
     //Xóa
-    @DeleteMapping("{id}/deleted")
+    @DeleteMapping("/{id}/deleted")
     public ResponseEntity<ApiResponse<CourseSectionResponseDTO>> deleted(@PathVariable Long id){
         CourseSectionResponseDTO data = courseSectionService.deleted(id);
 
         return ResponseEntity.ok(ApiResponse.ok(data));
+    }
+
+    //Khôi phục
+    @PatchMapping("/{id}/restore")
+    public ResponseEntity<ApiResponse<CourseSectionResponseDTO>> restore(@PathVariable Long id){
+        CourseSectionResponseDTO data = courseSectionService.restore(id);
+
+        return ResponseEntity.ok(ApiResponse.ok("Khôi phục lớp học phần thành công", data));
+    }
+
+    //Mở
+    @PatchMapping("/{id}/open")
+    public ResponseEntity<ApiResponse<CourseSectionResponseDTO>> open(@PathVariable Long id){
+        CourseSectionResponseDTO data = courseSectionService.open(id);
+
+        return ResponseEntity.ok(ApiResponse.ok("Mở lớp học phần thành công", data));
     }
 }

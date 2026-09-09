@@ -126,6 +126,38 @@ public class CourseSectionService {
         return  toDTO(courseSectionsSave, 0);
     }
 
+    public CourseSectionResponseDTO open(Long id){
+        CourseSections courseSections = courseSectionsRepository.findById(id).orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy lớp"));
+
+        if(courseSections.getStatus().equals(SectionStatus.OPEN)){
+            throw new AppException(HttpStatus.BAD_REQUEST, "Lớp học phần hiện tại đang mở");
+        }
+        else if(courseSections.getStatus().equals(SectionStatus.CANCELLED)){
+            throw new AppException(HttpStatus.BAD_REQUEST, "Lớp học phần hiện tại đã đóng, không thể mở");
+        }
+
+        courseSections.setStatus(SectionStatus.OPEN);
+
+        CourseSections courseSectionsSave = courseSectionsRepository.save(courseSections);
+
+        return toDTO(courseSectionsSave, enrollmentRepository.countByCourseSection_Id(id));
+    }
+
+    public CourseSectionResponseDTO restore(Long id) {
+        CourseSections courseSections = courseSectionsRepository.findById(id)
+                .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy lớp học phần"));
+
+        if (!courseSections.getStatus().equals(SectionStatus.CANCELLED)) {
+            throw new AppException(HttpStatus.BAD_REQUEST, "Lớp học phần chưa bị xóa, không thể khôi phục");
+        }
+
+        courseSections.setStatus(SectionStatus.OPEN);
+
+        CourseSections courseSectionsSave = courseSectionsRepository.save(courseSections);
+
+        return toDTO(courseSectionsSave, enrollmentRepository.countByCourseSection_Id(id));
+    }
+
     private CourseSectionResponseDTO toDTO(CourseSections section, Integer enrolledCount) {
         CourseSectionResponseDTO dto = new CourseSectionResponseDTO();
         dto.setId(section.getId());
