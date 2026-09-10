@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter
@@ -40,6 +41,8 @@ public class Student extends BaseEntity{
     @JoinColumn(name = "class_id")
     private Classes classes;
 
+    @OneToMany(mappedBy = "student")
+    private List<Enrollments> enrollmentsList;
     @Column(name = "gpa", precision = 3, scale = 2)
     private BigDecimal gpa;
     @Column(name = "is_deleted", nullable = false)

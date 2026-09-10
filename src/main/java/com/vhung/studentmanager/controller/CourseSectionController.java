@@ -6,7 +6,6 @@ import com.vhung.studentmanager.dto.response.CourseSectionResponseDTO;
 import com.vhung.studentmanager.dto.response.PageResponse;
 import com.vhung.studentmanager.service.CourseSectionService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +21,7 @@ public class CourseSectionController {
     private final CourseSectionService courseSectionService;
 
     // GET all
-    @GetMapping
+    @GetMapping()
     public ResponseEntity<ApiResponse<PageResponse<CourseSectionResponseDTO>>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
@@ -35,6 +34,14 @@ public class CourseSectionController {
         PageResponse<CourseSectionResponseDTO> data = courseSectionService.getAll(semesterId, courseId, teacherId, status, pageable);
         return ResponseEntity.ok(ApiResponse.ok(data));
     }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<CourseSectionResponseDTO>> get(@PathVariable Long id) {
+        CourseSectionResponseDTO data = courseSectionService.getById(id);
+        return ResponseEntity.ok(ApiResponse.ok(data));
+    }
+
 
     // POST
     @PostMapping

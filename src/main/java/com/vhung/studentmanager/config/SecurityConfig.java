@@ -31,7 +31,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/forgot-password").permitAll()
                         .requestMatchers("/api/auth/verify-otp").permitAll()
                         .requestMatchers("/api/auth/reset-password").permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers("/api/users").permitAll()
+                        .requestMatchers("/api/classes").permitAll()
+                        .anyRequest().permitAll())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .httpBasic(Customizer.withDefaults());
 

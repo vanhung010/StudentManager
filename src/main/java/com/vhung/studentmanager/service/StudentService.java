@@ -118,7 +118,7 @@ public class StudentService {
         return toDTO(student);
     }
 
-    public PageResponse<StudentResponseDTO> getAll(int page, int size, String keyword, Long departmentId, Integer enrollmentYear, String status){
+    public PageResponse<StudentResponseDTO> getAll(int page, int size, String keyword, Long departmentId, Integer enrollmentYear, String status, Long courseSectionId){
 
         Pageable pageable = PageRequest.of(page, size);
 
@@ -126,7 +126,9 @@ public class StudentService {
                 .where(StudentSpecification.hasDepartmentId(departmentId))
                 .and(StudentSpecification.hasEnrollmentYear(enrollmentYear))
                 .and(StudentSpecification.hasStatus(status))
-                .and(StudentSpecification.hasKeyword(keyword));
+                .and(StudentSpecification.hasKeyword(keyword))
+                .and(StudentSpecification.hasCourseSection(courseSectionId));
+
 
         Page<Student> students = studentRepository.findAll(specification, pageable);
 

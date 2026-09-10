@@ -20,6 +20,7 @@ public class TeacherResponseDTO {
     private String userName;
     private String phone_number;
     private Boolean isDeleted;
+    private String departmentName;
 
 
     public static TeacherResponseDTO fromEntity(Teacher teacher) {
@@ -30,6 +31,7 @@ public class TeacherResponseDTO {
         dto.setEmail(teacher.getEmail());
         dto.setPhone_number(teacher.getPhoneNumber());
         dto.setIsDeleted(teacher.getIsDeleted());
+        dto.setDepartmentName(teacher.getDepartment().getName());
 
         if (teacher.getUser() != null) {
             dto.setUserName(teacher.getUser().getUserName());

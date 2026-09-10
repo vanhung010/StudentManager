@@ -1,6 +1,10 @@
 package com.vhung.studentmanager.specification;
 
+import com.vhung.studentmanager.entity.CourseSections;
+import com.vhung.studentmanager.entity.Enrollments;
 import com.vhung.studentmanager.entity.Student;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
@@ -43,5 +47,24 @@ public class StudentSpecification {
 
            return criteriaBuilder.like(criteriaBuilder.lower(root.get("fullName")), search);
        });
+    }
+
+    public static Specification<Student> hasCourseSection(Long courseSectionId) {
+        return (root, query, cb) -> {
+            if (courseSectionId == null) {
+                return null;
+            }
+
+            Join<Student, Enrollments> enrollment =
+                    root.join("enrollments", JoinType.INNER);
+
+            Join<Enrollments, CourseSections> courseSection =
+                    enrollment.join("courseSection", JoinType.INNER);
+
+            return cb.equal(
+                    courseSection.get("id"),
+                    courseSectionId
+            );
+        };
     }
 }

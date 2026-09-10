@@ -44,6 +44,13 @@ public class CourseSectionService {
         return PageResponse.from(page);
     }
 
+    public CourseSectionResponseDTO getById(Long id) {
+        CourseSections section = courseSectionsRepository.findById(id)
+                .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Không tìm thấy lớp học phần"));
+        int enrolledCount = enrollmentRepository.countByCourseSection_Id(id);
+        return toDTO(section, enrolledCount);
+    }
+
     @Transactional
     public CourseSectionResponseDTO create(CourseSectionRequestDTO request) {
 

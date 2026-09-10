@@ -7,6 +7,8 @@ import com.vhung.studentmanager.entity.Departments;
 import com.vhung.studentmanager.exception.AppException;
 import com.vhung.studentmanager.repository.ClassRepository;
 import com.vhung.studentmanager.repository.DepartmentRepository;
+import com.vhung.studentmanager.repository.StudentRepository;
+import com.vhung.studentmanager.repository.TeacherRepository;
 import com.vhung.studentmanager.specification.DepartmentSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +24,8 @@ import java.util.List;
 public class DepartmentService {
     private final DepartmentRepository departmentRepository;
     private final ClassRepository classRepository;
+    private final StudentRepository studentRepository;
+    private final TeacherRepository teacherRepository;
 
     // lấy danh sách tất cả khoa
     public PageResponse<DepartmentResponseDTO> getAllDepartment(String status, String keyword,Long idClass, Pageable pageable){
@@ -96,13 +100,14 @@ public class DepartmentService {
         return toDTO(departments);
     }
 
-    private DepartmentResponseDTO toDTO(Departments departments){
-        return new DepartmentResponseDTO(
-                departments.getId(),
-                departments.getName(),
-                departments.getDepartmentCode(),
-                departments.isDeleted());
-
-
+    private DepartmentResponseDTO toDTO(Departments departments) {
+        return DepartmentResponseDTO.builder()
+                .id(departments.getId())
+                .name(departments.getName())
+                .departmentCode(departments.getDepartmentCode())
+                .isDeleted(departments.isDeleted())
+                .totalStudents(studentRepository.countByDepartments_IdAndIsDeletedIsFalse(departments.getId()))
+                .totalTeachers(teacherRepository.countByDepartment_IdAndIsDeletedIsFalse(departments.getId()))
+                .build();
     }
 }

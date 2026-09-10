@@ -15,6 +15,8 @@ public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpec
 
     int countByClassesIdAndIsDeletedIsFalse(Long classid);
 
+    int countByDepartments_IdAndIsDeletedIsFalse (Long id);
+
     boolean existsStudentByStudentCode(String studentCode);
 
     boolean existsStudentByStudentCodeAndIdNot(String studentCode, Long id);

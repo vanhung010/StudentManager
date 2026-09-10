@@ -25,4 +25,5 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long>, JpaSpec
     boolean existsByPhoneNumberContainingIgnoreCase(String phoneNumber);
     boolean existsByPhoneNumberContainingIgnoreCaseAndIdNot(String phoneNumber, Long id);
 
+    int countByDepartment_IdAndIsDeletedIsFalse(Long departmentId);
 }

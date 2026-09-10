@@ -14,4 +14,6 @@ public class DepartmentResponseDTO {
     private String name;
     private String departmentCode;
     private Boolean isDeleted;
+    private Integer totalStudents;
+    private Integer totalTeachers;
 }
